@@ -13,7 +13,7 @@
  -->
                 <div name="button_box" position="inside">
                     <button class="oe_stat_button" name="toggle_config"
-                        type="object" icon="fa-wrench">
+                        type="object" icon="fa-wrench" confirm="Uh oh, now you've done it.  You clicked the wrong button.  Click cancel, and go report yourself to Matt immediately.">
                         <field name="config_ok" widget="boolean_button" options='{"terminology": "config"}'/>
                     </button>
                 </div>
