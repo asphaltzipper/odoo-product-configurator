@@ -645,10 +645,15 @@ class ProductConfigurator(models.TransientModel):
                         attr_depends[attr_field] |= set(
                             domain_line.value_ids.ids)
                     elif domain_line.condition == 'not in':
-                        val_ids = attr_lines.filtered(
-                            lambda l: l.attribute_id.id == attr_id).value_ids
+                        # TODO: merge fix for github issue 179
+                        # https://github.com/pledra/odoo-product-configurator/issues/179
+                        dependee_attr_line = attr_lines.filtered(
+                            lambda l: l.attribute_id.id == attr_id)
+                        val_ids = dependee_attr_line.value_ids
                         val_ids = val_ids - domain_line.value_ids
                         attr_depends[attr_field] |= set(val_ids.ids)
+                        if not dependee_attr_line.required:
+                            attr_depends[attr_field] |= {False}
 
                 for dependee_field, val_ids in attr_depends.items():
                     if not val_ids:
@@ -662,8 +667,9 @@ class ProductConfigurator(models.TransientModel):
                             (dependee_field, 'not in', list(val_ids)))
 
                     if attr_line.required and not attr_line.custom:
-                        attrs['required'].append(
-                            (dependee_field, 'in', list(val_ids)))
+                        # attrs['required'].append(
+                        #     (dependee_field, 'in', list(val_ids)))
+                        pass
 
             # Create the new field in the view
             node = etree.Element(
